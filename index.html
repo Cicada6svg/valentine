@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Vibe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body { margin: 0; background: #000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; text-align: center; color: #fff; }
+        
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #ff0050, #000); display: flex; justify-content: center;
+            align-items: center; z-index: 1000; color: white; cursor: pointer;
+        }
+
+        #capture-area {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            padding: 40px 20px;
+            max-width: 450px;
+            margin: auto;
+            border-radius: 20px;
+        }
+
+        .photo-frame {
+            width: 100%;
+            min-height: 400px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 80, 0.5);
+            background: #222;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #display-image { width: 100%; display: none; }
+
+        .btn {
+            background: #ff0050; color: white; padding: 14px 30px;
+            border-radius: 10px; border: none; font-size: 16px;
+            cursor: pointer; margin: 10px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .download-btn { background: #fff; color: #000; display: none; }
+
+        /* Custom Message Styling */
+        #user-message {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #ff0050;
+            color: #fff;
+            width: 90%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 20px;
+            outline: none;
+        }
+
+        .vibe-text { font-size: 0.9rem; letter-spacing: 3px; color: #ff0050; text-transform: uppercase; margin-bottom: 10px; }
+        #player { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="startExperience()">
+        <div>
+            <div style="font-size: 80px; filter: drop-shadow(0 0 10px #ff0050);">❤️</div>
+            <h2 style="letter-spacing: 2px;">Vibe Check: Valentine's</h2>
+            <p>Tap to start the song</p>
+        </div>
+    </div>
+
+    <div id="capture-area">
+        <div class="vibe-text">Our Best Moments</div>
+        
+        <div class="photo-frame" id="frame">
+            <span id="hint-text" style="color: #666;">Add your photo 📸</span>
+            <img id="display-image" src="" alt="Vibe">
+        </div>
+
+        <div style="font-size: 1.1rem; line-height: 1.4;">
+            "Dancing in the dark, with you between my arms...<br>
+            listening to our favorite song."
+        </div>
+
+        <input type="text" id="user-message" placeholder="Type a message here..." maxlength="50">
+    </div>
+
+    <div style="margin-top: 20px; padding-bottom: 40px;">
+        <input type="file" id="image-input" accept="image/*" style="display: none;">
+        <button class="btn" onclick="document.getElementById('image-input').click()">Upload Photo</button>
+        <button class="btn download-btn" id="dl-button" onclick="downloadCard()">Save & Share</button>
+    </div>
+
+    <div id="player"></div>
+
+    <script>
+        const imageInput = document.getElementById('image-input');
+        const displayImage = document.getElementById('display-image');
+        const hintText = document.getElementById('hint-text');
+        const dlButton = document.getElementById('dl-button');
+
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    displayImage.src = e.target.result;
+                    displayImage.style.display = 'block';
+                    hintText.style.display = 'none';
+                    dlButton.style.display = 'inline-block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function downloadCard() {
+            const area = document.getElementById('capture-area');
+            html2canvas(area, { 
+                backgroundColor: "#000",
+                scale: 2 // Higher quality
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'VibeCheck_Valentines.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0', width: '0',
+                videoId: '2Vv-BfVoq4g', // Perfect - Ed Sheeran
+                playerVars: { 'autoplay': 1, 'loop': 1 },
+                events: { 'onReady': () => {} }
+            });
+        }
+
+        function startExperience() {
+            document.getElementById('overlay').style.display = 'none';
+            player.playVideo();
+        }
+    </script>
+</body>
+</html>
